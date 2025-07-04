@@ -1,0 +1,295 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>test.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "gmock/gmock.h"
+
+#include &lt;string&gt;
+
+#include "PartPublisher.h"
+#include "PartPublisherList.h"
+#include "Util.h"
+#include "Condition.h"
+
+<span style = "background-color:#dfd">TEST(PartPublisherTestGruop, NameTest)
+{
+	PartPublisher publisher;
+	std::string name = publisher.getName();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(name, "Default_Name_placeholder");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherTestGruop, NameUppercaseTest)
+{
+	PartPublisher publisher;
+	std::string name = publisher.getNameUppercase();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(name, "DEFAULT_NAME_PLACEHOLDER");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherTestGruop, GetCarTest)
+{
+	PartPublisher publisher;
+	std::string name = publisher.getCar();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(name, "Â÷·® Å¸ÀÔÀ¸·Î DEFAULT_NAME_PLACEHOLDERÀ» ¼±ÅÃÇÏ¼Ì½À´Ï´Ù.\n");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherTestGruop, GetEngineTest)
+{
+	PartPublisher publisher;
+	std::string name = publisher.getEngine();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(name, "DEFAULT_NAME_PLACEHOLDER ¿£ÁøÀ» ¼±ÅÃÇÏ¼Ì½À´Ï´Ù.\n");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherTestGruop, GetBrakeTest)
+{
+	PartPublisher publisher;
+	std::string name = publisher.getBrake();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(name, "DEFAULT_NAME_PLACEHOLDER Á¦µ¿ÀåÄ¡¸¦ ¼±ÅÃÇÏ¼Ì½À´Ï´Ù.\n");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherTestGruop, GetSteeringTest)
+{
+	PartPublisher publisher;
+	std::string name = publisher.getSteering();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(name, "DEFAULT_NAME_PLACEHOLDER Á¶ÇâÀåÄ¡¸¦ ¼±ÅÃÇÏ¼Ì½À´Ï´Ù.\n");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, GetCarFabsTest)
+{
+	PartPubisherList publishers;
+	std::string carFabs = publishers.getCarFabs();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(carFabs, "1. SEDAN\n2. SUV\n3. TRUCK\n");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, GetEngineFabsTest)
+{
+	PartPubisherList publishers;
+	std::string engineFabs = publishers.getEngineFabs();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(engineFabs, "1. GM\n2. TOYOTA\n3. WIA\n4. BROKEN\n");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, GetBrakeFabTest)
+{
+	PartPubisherList publishers;
+	std::string brakeFabs = publishers.getBrakeFabs();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(brakeFabs, "1. MANDO\n2. CONTINENTAL\n3. BOSCH\n");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, GetSteeringFabTest)
+{
+	PartPubisherList publishers;
+	std::string steeringFabs = publishers.getSteeringFabs();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(steeringFabs, "1. BOSCH\n2. MOBIS\n");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, FindCarFabsSedan)
+{
+	PartPubisherList publishers;
+	PartPublisher* publisher = publishers.findCarFabs(1);</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(publisher-&gt;getNameUppercase(), "SEDAN");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, FindCarFabsSUV)
+{
+	PartPubisherList publishers;
+	PartPublisher* publisher = publishers.findCarFabs(2);</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(publisher-&gt;getNameUppercase(), "SUV");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, FindEngineFabGM)
+{
+	PartPubisherList publishers;
+	PartPublisher* publisher = publishers.findEngineFabs(1);</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(publisher-&gt;getNameUppercase(), "GM");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, FindEngineFabBRKN)
+{
+	PartPubisherList publishers;
+	PartPublisher* publisher = publishers.findEngineFabs(4);</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(publisher-&gt;getNameUppercase(), "BROKEN");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, FindBrakeFabBosch)
+{
+	PartPubisherList publishers;
+	PartPublisher* publisher = publishers.findBrakFabs(3);</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(publisher-&gt;getNameUppercase(), "BOSCH");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, FindBrakeFabMobis)
+{
+	PartPubisherList publishers;
+	PartPublisher* publisher = publishers.findSteeringFabs(2);</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(publisher-&gt;getNameUppercase(), "MOBIS");
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, GetCarFabCntTest)
+{
+	PartPubisherList publishers;
+	int cnt = publishers.getCarFabsCnt();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(cnt, 4);
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, GetEngineFabCntTest)
+{
+	PartPubisherList publishers;
+	int cnt = publishers.getEngineFabsCnt();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(cnt, 5);
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, GetBrakeFabCntTest)
+{
+	PartPubisherList publishers;
+	int cnt = publishers.getBrakeFabsCnt();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(cnt, 4);
+}</span>
+
+<span style = "background-color:#dfd">TEST(PartPublisherListTestGruop, GetSteeringFabCntTest)
+{
+	PartPubisherList publishers;
+	int cnt = publishers.getSteeringFabsCnt();</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(cnt, 3);
+}</span>
+
+<span style = "background-color:#dfd">TEST(UtilTest, getNumberTest)
+{
+	int result = Util::getNumebr("132");</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(result, 132);
+}</span>
+
+<span style = "background-color:#dfd">TEST(UtilTest, trimTest)
+{
+	std::string result = "ADADadaVLN\n";
+	Util::trimNewlineChar(result);</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(result, "ADADadaVLN");
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConditionTest, exitTest)
+{
+	bool result = Condition::isExit("exit");
+	EXPECT_EQ(result, true);
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConditionTest, numberTest)
+{
+	bool result = Condition::isNumber("exit");
+	EXPECT_EQ(result, false);
+}</span>
+
+
+<span style = "background-color:#dfd">TEST(ConditionTest, isValidCarTypeTest)
+{
+	PartPubisherList publishers;
+	bool result = Condition::isValidCarType(CarType_Q, 4, publishers);
+	EXPECT_EQ(result, true);
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConditionTest, isValidEngineTypeTest)
+{
+	PartPubisherList publishers;
+	bool result = Condition::isValidEngineType(Engine_Q, 2, publishers);
+	EXPECT_EQ(result, false);
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConditionTest, isValidBrakeTypeTest)
+{
+	PartPubisherList publishers;
+	bool result = Condition::isValidBrakeType(brakeSystem_Q, 1, publishers);
+	EXPECT_EQ(result, false);
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConditionTest, isValidSteeringTypeTest)
+{
+	PartPubisherList publishers;
+	bool result = Condition::isValidSteeringType(SteeringSystem_Q, 1, publishers);
+	EXPECT_EQ(result, false);
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConditionTest, isValidTestTypeTest)
+{
+	PartPubisherList publishers;
+	bool result = Condition::isValidTestType(Run_Test, 1);
+	EXPECT_EQ(result, false);
+}</span>
+
+<span style = "background-color:#dfd">TEST(ConditionTest, isValidCarTest)
+{
+	PartPubisherList publishers;</span>
+	PartPublisher* stack[10];
+<span style = "background-color:#dfd">	stack[0] = new Sedan();
+	stack[1] = new GeneralMotors();
+	stack[2] = new Bosch();
+	stack[3] = new Bosch();</span>
+
+<span style = "background-color:#dfd">	std::string result = Condition::findFaulty(stack);
+	EXPECT_EQ(result, "");</span>
+
+<span style = "background-color:#dfd">	stack[2] = new Continental();
+	result = Condition::findFaulty(stack);
+	EXPECT_EQ(result, "Sedan¿¡´Â ContinentalÁ¦µ¿ÀåÄ¡ »ç¿ë ºÒ°¡\n");</span>
+
+<span style = "background-color:#dfd">	stack[0] = new Suv();
+	stack[1] = new Toyota();
+	result = Condition::findFaulty(stack);
+	EXPECT_EQ(result, "SUV¿¡´Â TOYOTA¿£Áø »ç¿ë ºÒ°¡\n");</span>
+
+<span style = "background-color:#dfd">	stack[0] = new Truck();
+	stack[1] = new Hyundai();
+	result = Condition::findFaulty(stack);
+	EXPECT_EQ(result, "Truck¿¡´Â WIA¿£Áø »ç¿ë ºÒ°¡\n");</span>
+
+<span style = "background-color:#dfd">	stack[0] = new Truck();
+	stack[1] = new GeneralMotors();
+	stack[2] = new Mando();
+	result = Condition::findFaulty(stack);
+	EXPECT_EQ(result, "Truck¿¡´Â MandoÁ¦µ¿ÀåÄ¡ »ç¿ë ºÒ°¡\n");</span>
+
+<span style = "background-color:#dfd">	stack[2] = new Bosch();
+	stack[3] = new Mobis();
+	result = Condition::findFaulty(stack);
+	EXPECT_EQ(result, "BoschÁ¦µ¿ÀåÄ¡¿¡´Â BoschÁ¶ÇâÀåÄ¡ ÀÌ¿Ü »ç¿ë ºÒ°¡\n");
+}</span></pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

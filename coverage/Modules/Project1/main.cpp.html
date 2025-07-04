@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>main.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#ifdef _DEBUG
+
+#include "gmock/gmock.h"
+
+int main()
+<span style = "background-color:#dfd">{
+	testing::InitGoogleMock();
+	return RUN_ALL_TESTS();
+}</span>
+
+#else
+
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;chrono&gt;
+#include &lt;thread&gt;
+#include &lt;vector&gt;
+
+#include "Type.h"
+#include "PartPublisher.h"
+#include "PartPublisherList.h"
+#include "Condition.h"
+#include "Util.h"
+
+#define CLEAR_SCREEN "\033[H\033[2J"
+
+void runProducedCar();
+void testProducedCar();
+void delay(int ms);
+
+void displayMenu(int step, PartPubisherList publishers);
+bool checkPart(int step, int answer, PartPubisherList publishers);
+bool checkStep(int&amp; step, int answer);
+void processPartsSelctionStep(int step, int answer, PartPubisherList publishers);
+void processRunStep(int answer);
+void nextStep(int&amp; step, int answer, PartPubisherList publishers);
+
+PartPublisher* stack[10];
+
+void delay(int ms)
+{
+	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
+
+class Screen
+{
+public:
+	static std::string getInput()
+	{
+		std::string input;
+		std::cout &lt;&lt; "INPUT &gt; ";
+		std::cin &gt;&gt; input;
+
+		return input;
+	}
+};
+
+int main()
+{
+	int step = CarType_Q;
+	PartPubisherList publishers;
+
+	while (true)
+	{
+		displayMenu(step, publishers);
+
+		std::string input = Screen::getInput();
+		Util::trimNewlineChar(input);
+
+		if (Condition::isExit(input))
+		{
+			std::cout &lt;&lt; "¹ÙÀÌ¹ÙÀÌ\n";
+			break;
+		}
+		if (Condition::isNumber(input) == false)
+		{
+			std::cout &lt;&lt; "ERROR :: ¼ýÀÚ¸¸ ÀÔ·Â °¡´É\n";
+			delay(800);
+			continue;
+		}
+
+		int answer = Util::getNumebr(input);
+
+		if (checkPart(step, answer, publishers))
+		{
+			continue;
+		}
+		else if (checkStep(step, answer))
+		{
+			continue;
+		}
+
+		nextStep(step, answer, publishers);
+	}
+}
+
+void runProducedCar()
+{
+	if (Condition::findFaulty(stack).size() &gt; 0)
+	{
+		std::cout &lt;&lt; "ÀÚµ¿Â÷°¡ µ¿ÀÛµÇÁö ¾Ê½À´Ï´Ù\n";
+		return;
+	}
+	if (stack[Engine_Q]-&gt;getNameUppercase() == "BROKEN")
+	{
+		std::cout &lt;&lt; "¿£ÁøÀÌ °íÀå³ªÀÖ½À´Ï´Ù.\n";
+		std::cout &lt;&lt; "ÀÚµ¿Â÷°¡ ¿òÁ÷ÀÌÁö ¾Ê½À´Ï´Ù.\n";
+		return;
+	}
+
+	std::cout &lt;&lt; "Car Type : " + stack[CarType_Q]-&gt;getName() + "\n";
+	std::cout &lt;&lt; "Engine : " + stack[Engine_Q]-&gt;getName() + "\n";
+	std::cout &lt;&lt; "Brake System : " + stack[brakeSystem_Q]-&gt;getName() + "\n";
+	std::cout &lt;&lt; "Steering System : " + stack[SteeringSystem_Q]-&gt;getName() + "\n";
+
+	std::cout &lt;&lt; "ÀÚµ¿Â÷°¡ µ¿ÀÛµË´Ï´Ù.\n";
+}
+
+void testProducedCar()
+{
+	std::string failReason = "";
+	std::string failMessage = "ÀÚµ¿Â÷ ºÎÇ° Á¶ÇÕ Å×½ºÆ® °á°ú : FAIL\n";
+	std::string successMessage = "ÀÚµ¿Â÷ ºÎÇ° Á¶ÇÕ Å×½ºÆ® °á°ú : PASS\n";
+
+	// Á¤ÇÕ¼ºÀÌ ¸Â´ÂÁö È®ÀÎ
+	failReason = Condition::findFaulty(stack);
+
+	// Á¤ÇÕ¼º¿¡ µû¶ó °á°ú Ãâ·Â
+	if (failReason.size() &gt; 0)
+	{
+		std::cout &lt;&lt; failMessage;
+		std::cout &lt;&lt; failReason;
+	}
+	else
+	{
+		std::cout &lt;&lt; successMessage;
+	}
+}
+
+void displayMenu(int step, PartPubisherList publishers)
+{
+	std::cout &lt;&lt; CLEAR_SCREEN;
+
+	int number = 1;
+	switch (step)
+	{
+	case CarType_Q:
+		std::cout &lt;&lt; "        ______________\n";
+		std::cout &lt;&lt; "       /|            | \n";
+		std::cout &lt;&lt; "  ____/_|_____________|____\n";
+		std::cout &lt;&lt; " |                      O  |\n";
+		std::cout &lt;&lt; " '-(@)----------------(@)--'\n";
+		std::cout &lt;&lt; "===============================\n";
+		std::cout &lt;&lt; "¾î¶² Â÷·® Å¸ÀÔÀ» ¼±ÅÃÇÒ±î¿ä?\n";
+		std::cout &lt;&lt; publishers.getCarFabs();
+
+		break;
+
+	case Engine_Q:
+		std::cout &lt;&lt; "¾î¶² ¿£ÁøÀ» Å¾ÀçÇÒ±î¿ä?\n";
+		std::cout &lt;&lt; "0. µÚ·Î°¡±â\n";
+		std::cout &lt;&lt; publishers.getEngineFabs();
+
+		break;
+
+	case brakeSystem_Q:
+		std::cout &lt;&lt; "¾î¶² Á¦µ¿ÀåÄ¡¸¦ ¼±ÅÃÇÒ±î¿ä?\n";
+		std::cout &lt;&lt; "0. µÚ·Î°¡±â\n";
+		std::cout &lt;&lt; publishers.getBrakeFabs();
+
+		break;
+
+	case SteeringSystem_Q:
+		std::cout &lt;&lt; "¾î¶² Á¶ÇâÀåÄ¡¸¦ ¼±ÅÃÇÒ±î¿ä?\n";
+		std::cout &lt;&lt; "0. µÚ·Î°¡±â\n";
+		std::cout &lt;&lt; publishers.getSteeringFabs();
+
+		break;
+
+	case Run_Test:
+		std::cout &lt;&lt; "¸ÚÁø Â÷·®ÀÌ ¿Ï¼ºµÇ¾ú½À´Ï´Ù.\n";
+		std::cout &lt;&lt; "¾î¶² µ¿ÀÛÀ» ÇÒ±î¿ä?\n";
+		std::cout &lt;&lt; "0. Ã³À½ È­¸éÀ¸·Î µ¹¾Æ°¡±â\n";
+		std::cout &lt;&lt; "1. RUN\n";
+		std::cout &lt;&lt; "2. Test\n";
+
+		break;
+	}
+	std::cout &lt;&lt; "===============================\n";
+}
+
+bool checkPart(int step, int answer, PartPubisherList publishers)
+{
+	std::string failReason = "";
+
+	// Á¤ÇÕ¼º È®ÀÎ
+	if (Condition::isValidCarType(step, answer, publishers))
+	{
+		failReason = "ERROR :: Â÷·® Å¸ÀÔÀº 1 ~ 3 ¹üÀ§¸¸ ¼±ÅÃ °¡´É\n";
+	}
+	else if (Condition::isValidEngineType(step, answer, publishers))
+	{
+		failReason = "ERROR :: ¿£ÁøÀº 1 ~ 4 ¹üÀ§¸¸ ¼±ÅÃ °¡´É\n";
+	}
+	else if (Condition::isValidBrakeType(step, answer, publishers))
+	{
+		failReason = "ERROR :: Á¦µ¿ÀåÄ¡´Â 1 ~ 3 ¹üÀ§¸¸ ¼±ÅÃ °¡´É\n";
+	}
+	else if (Condition::isValidSteeringType(step, answer, publishers))
+	{
+		failReason = "ERROR :: Á¶ÇâÀåÄ¡´Â 1 ~ 2 ¹üÀ§¸¸ ¼±ÅÃ °¡´É\n";
+	}
+	else if (Condition::isValidTestType(step, answer))
+	{
+		failReason = "ERROR :: Run ¶Ç´Â Test Áß ÇÏ³ª¸¦ ¼±ÅÃ ÇÊ¿ä\n";
+	}
+
+	// Á¤ÇÕ¼º¿¡ µû¶ó °á°ú Ãâ·Â
+	if (failReason.size() &gt; 0)
+	{
+		std::cout &lt;&lt; failReason;
+		delay(800);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool checkStep(int&amp; step, int answer)
+{
+	if (answer &gt; 0) return false;
+
+
+	if (step == Run_Test)
+	{
+		step = CarType_Q;
+	}
+	if (step &gt;= 1)
+	{
+		step -= 1;
+	}
+
+	return true;
+}
+
+void processPartsSelctionStep(int step, int answer, PartPubisherList publishers)
+{
+	switch (step)
+	{
+	case CarType_Q:
+		stack[CarType_Q] = publishers.findCarFabs(answer);
+		std::cout&lt;&lt;stack[CarType_Q]-&gt;getCar();
+		break;
+	case Engine_Q:
+		stack[Engine_Q] = publishers.findEngineFabs(answer);
+		std::cout &lt;&lt; stack[Engine_Q]-&gt;getEngine();
+		break;
+	case brakeSystem_Q:
+		stack[brakeSystem_Q] = publishers.findBrakFabs(answer);
+		std::cout &lt;&lt; stack[brakeSystem_Q]-&gt;getBrake();
+		break;
+	case SteeringSystem_Q:
+		stack[SteeringSystem_Q] = publishers.findSteeringFabs(answer);
+		std::cout &lt;&lt; stack[SteeringSystem_Q]-&gt;getSteering();
+		break;
+	default:
+		break;
+	}
+}
+
+void processRunStep(int answer)
+{
+	switch (answer)
+	{
+	case 1:
+		runProducedCar();
+		break;
+	case 2:
+		std::cout &lt;&lt; "Test...\n";
+		delay(1500);
+		testProducedCar();
+		break;
+	default:
+		break;
+	}
+}
+
+void nextStep(int&amp; step, int answer, PartPubisherList publishers)
+{
+	if (step &lt;= SteeringSystem_Q)
+	{
+		processPartsSelctionStep(step, answer, publishers);
+		delay(800);
+		step++;
+	}
+	else
+	{
+		processRunStep(answer);
+		delay(2000);
+	}
+}
+
+ #endif</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
